@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Osprey - Slideshow</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../css/logo-nav.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <link href="../bower_components/darkroom/build/darkroom.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Style for the thumbnails displayed on the main page -->
+    <style>
+    #sortable {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #sortable li {
+            margin: 3px 3px 3px 0;
+            padding: 10px;
+            float: left;
+
+            text-align: left;
+        }
+
+        .thumb {
+            height: 100px;
+            border: 1px solid #000;
+            margin: 10px 10px 0 0;
+        }
+    }
+    </style>
+<!--             width: 175px;
+            height: 200px; -->
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+      <!-- Navigation -->
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header" style="height:130px;">
+					<button type="button" class="navbar-toggle" data-toggle="collapse"
+						data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"> </span> <span class="icon-bar"> </span> <span
+							class="icon-bar"> </span>
+					</button>
+					<a class="navbar-brand" href="#"> <img src="../logo.png"
+						height="100" alt=""  />
+					</a>
+				</div>
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse"
+					id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+						<!--<li><a href="#">About</a></li>
+						<li><a href="#">Services</a></li>
+						<li><a href="#">Contact</a></li>-->
+					</ul>
+				</div>
+				<!-- /.navbar-collapse -->
+			</div>
+			<!-- /.container -->
+		</nav>
+
+        <!-- page-wrapper -->
+        <div class="container" id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                       <div class="panel-heading">
+                          Select, Remove and Order images
+                       </div>
+                       <div class="panel-body">
+                        <label id="id_fancybox" class="btn btn-default btn-file">Start Slideshow</label>
+                        <label class="btn btn-default btn-file">
+                            Add an image file or files
+                            <input type="file" style="display: none;" id="files_exif" name="files[]" multiple>
+                            <!--  <p>Or <strong>drag &amp; drop</strong> an image file onto this webpage.</p> -->
+                            <!-- TODO: Implement the drag and drop -->
+                        </label>
+                        <label id="btn_removeImages" class="btn btn-default">Remove all images</label>
+                        <!-- <label id="btn_post" class="btn btn-default">Post load</label> -->
+                     </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-4 -->
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            Images to display
+                        </div>
+                        <div class="panel-body" id="lightgallery">
+                            <!-- List location for the image elements -->
+                            <ul id="sortable">
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /.col-lg-12 -->
+                </div>
+            </div>
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- JQuery-ui -->
+    <script src="../bower_components/jquery-ui/jquery-ui.js"></script>
+
+    <!-- Specific scripts for Osprey Slideshow -->
+    <script>
+
+        // enable the selection and sorting of the elements
+        $(function() {
+            $("#sortable").sortable();
+            $("#sortable").disableSelection();
+        });
+
+        // ----------------
+        // call back function for selecting the images
+        function handleFileSelect3(evt) {
+            var files = evt.target.files; // FileList object
+            var imageData = [];
+
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; f = files[i]; i++) {
+                // Only process image files.
+                if (!f.type.match('image.*')) {
+                    continue;
+                }
+
+                var imageInfo = { _id:"imageInfo", index: i,  fileObject: f};
+                imageData.push(imageInfo);
+
+                console.log(["Loading file>",f.name].join(''));
+                loadImage.parseMetaData(f, function(data) {
+
+                     console.log(["parseMetaData callback>",this.fileObject.name].join(''));
+
+                                          var options = {
+                                              maxWidth : 1000,
+                                              noRevoke: 'true',
+                                              canvas: 'true'
+                                          }
+
+
+                     if (data.exif) {
+                         var tags = data.exif.getAll()
+                         this.exposureValue=tags['ExposureValue'];
+                         this.FNumber=tags['FNumber'];
+						       console.log(tags['Orientation']);
+                        //  options.orientation = tags['Orientation'];
+                     }
+
+
+                     // need to load the imageInfo
+                     if (!loadImage(
+                             this.fileObject,
+                             replaceResults.bind(this),
+                             options
+                         )) {
+                         result.children().replaceWith(
+                             $('<span>Your browser does not support the URL or FileReader API.</span>')
+                         )
+                     }
+
+                  }.bind(imageInfo))
+
+            }
+
+        }
+
+        // /.handleFileSelect
+
+        function replaceResults(img) {
+           // Render thumbnail.
+           console.log('replaceResults>'+this.fileObject.name+img);
+
+          var ctx = img.getContext("2d");
+          ctx.translate(img.width/2, img.height/2);                   // translate to canvas center
+          ctx.rotate(Math.PI*0.5);                 // add rotation transform
+          ctx.globalCompositeOperation = "copy";   // set comp. mode to "copy"
+            ctx.drawImage(ctx.canvas,  0, 0);//, 150, 150,  -75, -75, 150, 150);
+
+         document.body.appendChild(img); // display it!
+
+          var cf = this.fileObject.name;
+          var span = document.createElement('li');
+          var imgElem =  img.toDataURL("image/png");
+          span.class = 'ui-state-default';
+          span.innerHTML = ['<div class="well"><a caption="', cf, '" class="fancybox"  data-fancybox-type="image" data-fancybox-group="gallery" href="',
+                              imgElem, '"><img class="thumb" src="',imgElem,
+                              '"/></a><div class=""><p class="editable">',cf,'</p></div></div>'
+                           ].join('');
+          document.getElementById('sortable').insertBefore(span, null);
+
+
+
+        }
+
+        // bind the 'files' button to the event handler
+        document.getElementById('files_exif').addEventListener('change', handleFileSelect3, false);
+
+        // ----
+//         $('#btn_post').on('click',function(e){
+//            $('.editable').editable({action:"click"}, function(e){
+//
+//            });
+//
+//            $('.btn_rotateRight').on('click',function(e1){
+//
+// var imgElem=$(this).parents(".well").find('img').get();
+//
+//    new Darkroom(imgElem);
+//              console.log(imgElem);
+//           })
+//         })
+
+        // ----------------
+        // Start the slide show running
+        $('#id_fancybox').on('click', function(e) {
+            $('.fancybox').fancybox({
+                closeBtn: false,
+                arrows: false,
+                nextClick: true,
+                padding: 0,
+                loop: false,
+                scrolling: 'no',
+                type: 'image',
+                helpers: {
+                    overlay: {
+                        css: {
+                           'overflow' : 'hidden',
+                            'background': 'rgba(56, 56, 56, 1.00)' /* Standard syntax 'rgba(56, 56, 56, 1.00)' 'url("monopattern.png")' linear-gradient(to bottom right, black, gray)*/
+                        }
+                    },
+                    title: {
+                        type: 'outside'
+                    }
+
+                },
+                afterLoad: function() {
+                    var $scale = 0.8;
+                    this.title = 'Image ' + (this.index + 1) + ' of ' + this.group.length + ' ' + $(this.element).attr('caption');
+                    wh = $(window).height() / this.height * $scale;
+                    ww = $(window).width() / this.width * $scale;
+                    if (wh < ww) {
+                        this.height = this.height * wh;
+                        this.width = this.width * wh;
+                    } else {
+                        this.height = this.height * ww;
+                        this.width = this.width * ww;
+                    }
+
+                }
+            });
+
+            // id=sortable
+            var $firstImage = $('#sortable').find("a:first");
+            $firstImage.trigger('click');
+
+        })
+
+
+        $("#btn_removeImages").click(function(e){
+
+           $('#sortable').empty();
+
+        })
+
+
+
+    </script>
+
+
+    <!-- lightgallery -->
+    <script src="../bower_components/lightgallery/dist/js/lightgallery.js"></script>
+
+    <!-- Load-image -->
+    <script src="../bower_components/javascript-load-image/js/load-image.js"></script>
+    <script src="../bower_components/javascript-load-image/js/load-image-orientation.js"></script>
+    <script src="../bower_components/javascript-load-image/js/load-image-meta.js"></script>
+    <script src="../bower_components/javascript-load-image/js/load-image-exif.js"></script>
+    <script src="../bower_components/javascript-load-image/js/load-image-exif-map.js"></script>
+
+
+    <!-- Add fancyBox main JS and CSS files -->
+    <script type="text/javascript" src="../fancybox/jquery.fancybox.js?v=2.1.5"></script>
+    <link rel="stylesheet" type="text/css" href="../fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
+
+    <!-- Add Button helper (this is optional) -->
+    <link rel="stylesheet" type="text/css" href="../fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5" />
+    <script type="text/javascript" src="../fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+
+    <script src="../bower_components/jquery-editable/js/jquery.editable.js"></script>
+
+    <script src="../bower_components/fabric/dist/fabric.js"></script>
+    <!-- Darkroom.js-->
+    <script src="../bower_components/darkroom/build/darkroom.js"></script>
+
+</body>
+
+</html>

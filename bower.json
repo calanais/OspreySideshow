@@ -1,0 +1,11 @@
+{
+  "name": "ospreyslideshow",
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "bootstrap-social": "^5.0.0",
+    "lightgallery": "^1.2.21",
+    "jquery-ui": "^1.11.4",
+    "javascript-load-image": "^2.6.1",
+    "jquery-editable": "^1.0.1"
+  }
+}
