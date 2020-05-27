@@ -1,0 +1,22 @@
+{
+  "name": "osprey-slideshow",
+  "version": "1.0.0",
+  "description": "Quick and Simple Slideshow",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/calanais/OspreySideshow.git"
+  },
+  "author": "Matthew B White",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/calanais/OspreySideshow/issues"
+  },
+  "homepage": "https://github.com/calanais/OspreySideshow#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
